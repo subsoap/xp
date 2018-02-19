@@ -1,4 +1,4 @@
-![XP](xp_logo.png)
+![XP](xp_logo2.png)
 
 # XP
 A generic leveling up system for Defold
