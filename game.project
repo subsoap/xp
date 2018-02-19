@@ -1,0 +1,9 @@
+[project]
+title = XP
+
+[bootstrap]
+main_collection = /example/example.collectionc
+
+[input]
+game_binding = /example/example.input_bindingc
+
