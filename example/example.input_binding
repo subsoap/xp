@@ -1,0 +1,12 @@
+key_trigger {
+  input: KEY_Z
+  action: "key_z"
+}
+key_trigger {
+  input: KEY_X
+  action: "key_x"
+}
+key_trigger {
+  input: KEY_C
+  action: "key_c"
+}

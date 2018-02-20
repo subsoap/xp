@@ -1,9 +1,17 @@
 [project]
 title = XP
+custom_resources = xp/,example/
+dependencies = https://github.com/subsoap/ease/archive/master.zip
 
 [bootstrap]
 main_collection = /example/example.collectionc
 
 [input]
 game_binding = /example/example.input_bindingc
+
+[script]
+shared_state = 1
+
+[library]
+include_dirs = xp
 

@@ -1,0 +1,27 @@
+images {
+  image: "/example/texture/logo.png"
+}
+images {
+  image: "/example/texture/defold_logo.png"
+}
+images {
+  image: "/example/texture/level_bg.png"
+}
+images {
+  image: "/example/texture/logo.png"
+}
+images {
+  image: "/example/texture/progress_bg.png"
+}
+images {
+  image: "/example/texture/progress_fg.png"
+}
+images {
+  image: "/example/texture/star_icon.png"
+}
+images {
+  image: "/example/texture/progress_clipper.png"
+}
+margin: 2
+extrude_borders: 0
+inner_padding: 0
