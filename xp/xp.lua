@@ -34,5 +34,17 @@ end
 function M.scale_gui_bar_clipper_size_y(node, percent, original_size)
 	M.scale_gui_bar_clipper_size_x(node, percent, original_size)
 end
+
+-- this makes the text of the visible current xp go up smoothly
+-- you need fixed width bitmap fonts for counters if you don't want them to visibly jump around as they increase
+function M.update_current_xp_text(node, xp_visible, current_xp, max_xp)
+	if math.abs(xp_visible - current_xp) <= 1 then
+		xp_visible = current_xp
+	else
+		xp_visible = math.floor(xp_visible + (current_xp - xp_visible) * 0.14)
+	end
+	gui.set_text(node, math.min(xp_visible, max_xp))
+	return xp_visible
+end
 	
 return M

@@ -18,6 +18,8 @@ function init(self)
 	self.xp = {}
 	self.xp_clipper_node = gui.get_node("xp_clipper")
 	self.xp_clipper_size = gui.get_size(self.xp_clipper_node)
+
+	self.current_xp_text_node = gui.get_node("current_xp")
 	
 	self.xp_width = gui.get_size(self.xp_clipper_node).x
 
@@ -78,21 +80,10 @@ function update(self, dt)
 
 	end
 
-	if math.abs(self.current_xp_visible - self.current_xp) <= 1 then
-		self.current_xp_visible = self.current_xp
-	else
-		self.current_xp_visible = math.floor(self.current_xp_visible + (self.current_xp - self.current_xp_visible) * 0.14)
-	end
-	
-	gui.set_text(gui.get_node("level"), self.level)	
-	gui.set_text(gui.get_node("current_xp"), math.min(self.current_xp_visible, self.max_xp))
-	
-	--self.xp_clipper_size.x = self.xp_width * self.easing / 100
-	--gui.set_size(self.xp_clipper_node, self.xp_clipper_size)
 
-	
-	--xp.scale_gui_bar_clipper_size_x(node, percent, original_scale)
-	
+	self.current_xp_visible = xp.update_current_xp_text(self.current_xp_text_node, self.current_xp_visible, self.current_xp, self.max_xp)
+	gui.set_text(gui.get_node("level"), self.level)	
+
 end
 
 function on_message(self, message_id, message, sender)
