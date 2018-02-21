@@ -26,8 +26,12 @@ end
 function update(self, dt)
 	self.time = self.time + dt
 
-	local easing = ease.in_cubic(math.min(self.time, 2), 2, 0, 100)
-	print(easing)
+	local time = 1
+	local total = 20000 / 20000 * 100
+	local initial = 50
+	local total_new = total - initial
+	local easing = ease.in_cubic(math.min(self.time, time), time, 0, total_new) + initial
+	--print(easing)
 	self.xp_clipper_position_current.x = self.xp_clipper_position_original.x - self.xp_width * (100 - easing) / 100
 	self.xp_fg_position_current.x = self.xp_fg_position_original.x + self.xp_width * (100 - easing) / 100 
 	gui.set_position(gui.get_node("xp_clipper"), self.xp_clipper_position_current)
