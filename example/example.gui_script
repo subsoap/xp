@@ -17,12 +17,9 @@ function init(self)
 	
 	self.xp = {}
 	self.xp_clipper_node = gui.get_node("xp_clipper")
-	self.xp_fg_node = gui.get_node("xp_fg")
-	self.xp_clipper_position_original = gui.get_position(self.xp_clipper_node)
-	self.xp_fg_position_original = gui.get_position(self.xp_fg_node)
-	self.xp_clipper_position_current = gui.get_position(self.xp_clipper_node)
-	self.xp_fg_position_current = gui.get_position(self.xp_fg_node)	
-	self.xp_width = gui.get_size(self.xp_fg_node).x
+	self.xp_clipper_size = gui.get_size(self.xp_clipper_node)
+	
+	self.xp_width = gui.get_size(self.xp_clipper_node).x
 
 	self.level = 1
 	
@@ -73,11 +70,9 @@ function update(self, dt)
 		print("level up!")
 		level_up(self)
 	end
-	--print(easing)
-	self.xp_clipper_position_current.x = self.xp_clipper_position_original.x - self.xp_width * (100 - self.easing) / 100
-	self.xp_fg_position_current.x = self.xp_fg_position_original.x + self.xp_width * (100 - self.easing) / 100 
-	gui.set_position(gui.get_node("xp_clipper"), self.xp_clipper_position_current)
-	gui.set_position(gui.get_node("xp_fg"), self.xp_fg_position_current)
+
+	self.xp_clipper_size.x = self.xp_width * self.easing / 100
+	gui.set_size(self.xp_clipper_node, self.xp_clipper_size)
 
 	gui.set_text(gui.get_node("level"), self.level)
 	gui.set_text(gui.get_node("current_xp"), math.min(self.current_xp, self.max_xp))
