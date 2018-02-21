@@ -346,8 +346,8 @@ nodes {
 }
 nodes {
   position {
-    x: 456.0
-    y: 176.0
+    x: 418.0
+    y: 190.0
     z: 0.0
     w: 1.0
   }
@@ -358,8 +358,8 @@ nodes {
     w: 1.0
   }
   scale {
-    x: 1.0
-    y: 1.0
+    x: 0.5
+    y: 0.5
     z: 1.0
     w: 1.0
   }
@@ -542,9 +542,9 @@ nodes {
     w: 1.0
   }
   color {
-    x: 0.0
-    y: 0.0
-    z: 0.0
+    x: 0.17254902
+    y: 0.16078432
+    z: 0.16078432
     w: 1.0
   }
   type: TYPE_TEXT
@@ -556,9 +556,9 @@ nodes {
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
   outline {
-    x: 0.0
-    y: 0.0
-    z: 0.0
+    x: 0.17254902
+    y: 0.16078432
+    z: 0.16078432
     w: 1.0
   }
   shadow {
