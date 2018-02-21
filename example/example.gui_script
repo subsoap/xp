@@ -24,6 +24,7 @@ function init(self)
 	self.level = 1
 	
 	self.current_xp = 0
+	self.current_xp_visible = 0
 	self.max_xp = 20000
 	self.duration = 0.75 -- seconds to finish
 	self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
@@ -74,8 +75,17 @@ function update(self, dt)
 		level_up(self)
 	elseif (self.easing ~= self.total) then
 		xp.scale_gui_bar_clipper_size_x(self.xp_clipper_node, self.easing / 100, self.xp_clipper_size)
+
 	end
 
+	if math.abs(self.current_xp_visible - self.current_xp) <= 1 then
+		self.current_xp_visible = self.current_xp
+	else
+		self.current_xp_visible = math.floor(self.current_xp_visible + (self.current_xp - self.current_xp_visible) * 0.14)
+	end
+	
+	gui.set_text(gui.get_node("level"), self.level)	
+	gui.set_text(gui.get_node("current_xp"), math.min(self.current_xp_visible, self.max_xp))
 	
 	--self.xp_clipper_size.x = self.xp_width * self.easing / 100
 	--gui.set_size(self.xp_clipper_node, self.xp_clipper_size)
@@ -83,8 +93,6 @@ function update(self, dt)
 	
 	--xp.scale_gui_bar_clipper_size_x(node, percent, original_scale)
 	
-	gui.set_text(gui.get_node("level"), self.level)
-	gui.set_text(gui.get_node("current_xp"), math.min(self.current_xp, self.max_xp))
 end
 
 function on_message(self, message_id, message, sender)
