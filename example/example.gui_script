@@ -29,6 +29,9 @@ function init(self)
 	self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
 	self.initial = 0 -- starting value	
 	self.total_new = self.total - self.initial -- progress amount to ease toward from initial value
+
+	self.easing = ease.out_cubic(math.min(self.time, self.duration), self.duration, 0, self.total_new) + self.initial
+	xp.scale_gui_bar_clipper_size_x(self.xp_clipper_node, self.easing / 100, self.xp_clipper_size)
 end
 
 function final(self)
@@ -39,13 +42,13 @@ local function update_xp(self)
 	if self.initial ~= 100 then
 		self.time = 0
 		self.current_xp = self.current_xp + math.max(math.random(4000), 1000)
-		print(self.current_xp, self.max_xp)
+		--print(self.current_xp, self.max_xp)
 		self.initial = self.total
 		self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
 		self.total_new = self.total - self.initial
 	end
 
-	--print(self.initial, self.current_xp, self.total, self.easing)
+	
 end
 
 local function level_up(self)
@@ -54,7 +57,7 @@ local function level_up(self)
 	
 	self.time = 0
 	self.current_xp = self.current_xp - self.max_xp
-	print(self.current_xp, self.max_xp)
+	--print(self.current_xp, self.max_xp)
 	self.initial = 0
 	self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
 	self.total_new = self.total - self.initial
@@ -69,11 +72,17 @@ function update(self, dt)
 	if (self.easing == self.total and self.current_xp >= self.max_xp) or self.current_xp >= self.max_xp and self.easing >= 100 then
 		print("level up!")
 		level_up(self)
+	elseif (self.easing ~= self.total) then
+		xp.scale_gui_bar_clipper_size_x(self.xp_clipper_node, self.easing / 100, self.xp_clipper_size)
 	end
 
-	self.xp_clipper_size.x = self.xp_width * self.easing / 100
-	gui.set_size(self.xp_clipper_node, self.xp_clipper_size)
+	
+	--self.xp_clipper_size.x = self.xp_width * self.easing / 100
+	--gui.set_size(self.xp_clipper_node, self.xp_clipper_size)
 
+	
+	--xp.scale_gui_bar_clipper_size_x(node, percent, original_scale)
+	
 	gui.set_text(gui.get_node("level"), self.level)
 	gui.set_text(gui.get_node("current_xp"), math.min(self.current_xp, self.max_xp))
 end
