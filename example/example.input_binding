@@ -10,3 +10,7 @@ key_trigger {
   input: KEY_C
   action: "key_c"
 }
+mouse_trigger {
+  input: MOUSE_BUTTON_1
+  action: "click"
+}
