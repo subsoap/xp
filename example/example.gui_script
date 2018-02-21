@@ -13,6 +13,8 @@ function init(self)
 	msg.post("@render:", "clear_color", { color = vmath.vector4(140/255, 127/255, 112/255, 1) } )
 	self.time = 0
 
+
+	
 	self.xp = {}
 	self.xp_clipper_node = gui.get_node("xp_clipper")
 	self.xp_fg_node = gui.get_node("xp_fg")
@@ -22,7 +24,9 @@ function init(self)
 	self.xp_fg_position_current = gui.get_position(self.xp_fg_node)	
 	self.xp_width = gui.get_size(self.xp_fg_node).x
 
-	self.current_xp = 1000
+	self.level = 1
+	
+	self.current_xp = 0
 	self.max_xp = 20000
 	self.duration = 0.75 -- seconds to finish
 	self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
@@ -37,7 +41,7 @@ end
 local function update_xp(self)
 	if self.initial ~= 100 then
 		self.time = 0
-		self.current_xp = self.current_xp + math.random(5000)
+		self.current_xp = self.current_xp + math.max(math.random(4000), 1000)
 		print(self.current_xp, self.max_xp)
 		self.initial = self.total
 		self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
@@ -48,6 +52,9 @@ local function update_xp(self)
 end
 
 local function level_up(self)
+
+	self.level = self.level + 1
+	
 	self.time = 0
 	self.current_xp = self.current_xp - self.max_xp
 	print(self.current_xp, self.max_xp)
@@ -62,7 +69,7 @@ function update(self, dt)
 	self.time = self.time + dt
 	self.easing = ease.out_cubic(math.min(self.time, self.duration), self.duration, 0, self.total_new) + self.initial
 	if self.easing > 100 then self.easing = 100 end
-	if self.easing == self.total and self.current_xp >= self.max_xp then
+	if (self.easing == self.total and self.current_xp >= self.max_xp) or self.current_xp >= self.max_xp and self.easing >= 100 then
 		print("level up!")
 		level_up(self)
 	end
@@ -71,6 +78,9 @@ function update(self, dt)
 	self.xp_fg_position_current.x = self.xp_fg_position_original.x + self.xp_width * (100 - self.easing) / 100 
 	gui.set_position(gui.get_node("xp_clipper"), self.xp_clipper_position_current)
 	gui.set_position(gui.get_node("xp_fg"), self.xp_fg_position_current)
+
+	gui.set_text(gui.get_node("level"), self.level)
+	gui.set_text(gui.get_node("current_xp"), math.min(self.current_xp, self.max_xp))
 end
 
 function on_message(self, message_id, message, sender)
