@@ -1,9 +1,37 @@
 local M = {}
 
+M.xp = {}
 M.xp_data_filename = "/xp/blank_data.lua"
 M.xp_data = {}
 M.initiated = false
 M.verbose = false
+
+local function catch(what)
+	return what[1]
+end
+
+local function try(what)
+	status, result = pcall(what[1])
+	if not status then
+		what[2](result)
+	end
+	return result
+end
+
+function M.node_exists(node)
+	local exists = true
+	try {
+		function()
+			gui.get_node(node)
+		end,
+		catch {
+			function(error)
+				exists = false
+			end
+		}
+	}
+	return exists
+end
 
 function M.init()
 	M.xp_data = assert(loadstring(sys.load_resource(M.xp_data_filename)))()
@@ -24,8 +52,52 @@ end
 function M.load_data()
 end
 
-function M.create_id(id, style)
-	assert(M.xp_data[id] == nil, "XP: You cannot have duplicate XP IDs")
+local function setup_node(node_name)
+	if node_name ~= nil then
+		assert(M.node_exists(node_name), "XP: node_text_current_xp must be a node that exists")
+		return gui.get_node(node_name)	
+	else
+		return nil
+	end	
+end
+
+-- If you pass in data then it will overwrite all values listed within
+function M.create_id(id, label, data)
+	assert(M.xp[id] == nil, "XP: You cannot have duplicate XP IDs")
+	assert(M.xp_data[label] ~= nil, "XP: create_id requires a valid label found in your xp data template")
+	local xp = {}
+	
+	xp.level = M.xp_data[label].level or 1
+	xp.xp_needed = M.xp_data[label].xp_needed or 0
+	xp.total_xp = M.xp_data[label].total_xp or 0
+	xp.style = M.xp_data[label].style or 1
+	xp.loop = M.xp_data[label].loop or false
+	xp.loop_level = M.xp_data[label].loop_level or 100
+	xp.loop_reset_xp_amounts = M.xp_data[label].loop_reset_xp_amounts or false
+	xp.loops_done = M.xp_data[label].loops_done or 0
+	xp.max_level = M.xp_data[label].max_level or 100
+	xp.limit_by_max_level = M.xp_data[label].limit_by_max_level or false
+
+
+	xp.node_text_current_xp = setup_node(M.xp_data[label].node_text_current_xp)
+	xp.node_text_max_xp = setup_node(M.xp_data[label].node_text_max_xp)
+	xp.node_clipper = setup_node(M.xp_data[label].node_clipper)
+
+	xp.formula = M.xp_data[label].formula or {}
+	xp.xp_amounts = M.xp_data[label].xp_amounts or {}
+
+	-- doesn't handle the nodes yet
+	if data ~= nil then
+		for k,v in pairs(data) do
+			xp[k] = v
+			if k == "node_text_current_xp" or k == "node_text_max_xp" or k == "node_clipper" then
+				xp[k] = setup_node(v)
+			end
+		end
+	end
+	
+	M.xp[id] = xp
+	return M.xp[id]
 end
 
 function M.delete_id(id)

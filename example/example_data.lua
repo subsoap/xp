@@ -7,7 +7,7 @@ return {
 	
 	--]]
 	shooter = {
-		level = 0,
+		level = 1,
 		xp_needed = 0,
 		total_xp = 0,
 		style = 1, -- style determines the behavior of leveling up - using look up table vs formulas
@@ -17,6 +17,10 @@ return {
 		loops_done = 0, -- loops done, can show stars next to level showing loops
 		max_level = 100,
 		limit_by_max_level = false,
+
+		node_text_current_xp = nil, -- these are the names of the nodes and not the result of gui.get_node(id)
+		node_text_max_xp = nil, -- you can set default values to these if you want
+		node_clipper = nil,
 		
 		formula = {
 			[1] = "level * 200", -- you can define different formulas for different level ranges

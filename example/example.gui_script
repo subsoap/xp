@@ -1,17 +1,25 @@
 xp = require("xp.xp")
 ease = require("ease.ease")
 
-function init(self)
+local function clear_bad_rng()
 	math.randomseed(os.time())
-	math.random();math.random();math.random();math.random();math.random();
-	-- clearing junk rng
+	math.random();math.random();math.random();math.random();math.random();	
+end
 
-	
-	xp.verbose = true
-	xp.init()
+function init(self)
+	clear_bad_rng()
+
+	-- example config
 	msg.post(".", "acquire_input_focus")
 	msg.post("@render:", "clear_color", { color = vmath.vector4(140/255, 127/255, 112/255, 1) } )
-	self.time = 0
+	self.time = 0	
+
+	-- setup XP
+	xp.xp_data_filename = "/example/example_data.lua"
+	xp.verbose = true
+	xp.init()
+
+
 
 
 	
@@ -35,6 +43,11 @@ function init(self)
 
 	self.easing = ease.out_cubic(math.min(self.time, self.duration), self.duration, 0, self.total_new) + self.initial
 	xp.scale_gui_bar_clipper_size_x(self.xp_clipper_node, self.easing / 100, self.xp_clipper_size)
+
+	
+	self.player_xp = xp.create_id("player_xp", "shooter", {level = 99, loop = true, node_clipper = "xp_clipper"})
+	pprint(self.player_xp)
+
 end
 
 function final(self)
@@ -65,7 +78,7 @@ local function level_up(self)
 	self.initial = 0
 	self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
 	self.total_new = self.total - self.initial
-	
+	self.current_xp_visible = 0
 end
 
 function update(self, dt)
