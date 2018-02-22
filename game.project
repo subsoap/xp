@@ -1,7 +1,7 @@
 [project]
 title = XP
 custom_resources = xp/,example/
-dependencies = https://github.com/subsoap/ease/archive/master.zip
+dependencies = https://github.com/subsoap/ease/archive/master.zip,https://github.com/subsoap/defsave/archive/master.zip
 
 [bootstrap]
 main_collection = /example/example.collectionc
@@ -14,4 +14,7 @@ shared_state = 1
 
 [library]
 include_dirs = xp
+
+[display]
+variable_dt = 1
 

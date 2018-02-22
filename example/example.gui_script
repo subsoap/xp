@@ -55,7 +55,8 @@ local function update_xp(self)
 end
 
 local function level_up(self)
-
+	-- add a wait here to do an animation or something
+	
 	self.level = self.level + 1
 	
 	self.time = 0
@@ -81,7 +82,7 @@ function update(self, dt)
 	end
 
 
-	self.current_xp_visible = xp.update_current_xp_text(self.current_xp_text_node, self.current_xp_visible, self.current_xp, self.max_xp)
+	self.current_xp_visible = xp.update_current_xp_text(self.current_xp_text_node, self.current_xp_visible, self.current_xp, self.max_xp, 0.25, dt)
 	gui.set_text(gui.get_node("level"), self.level)	
 
 end
