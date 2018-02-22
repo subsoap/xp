@@ -1,7 +1,7 @@
 return {
 
 	--[[
-	Types:
+	style:
 	1 - look up table list
 	2 - formula
 	
@@ -10,13 +10,13 @@ return {
 		level = 0,
 		xp_needed = 0,
 		total_xp = 0,
-		type = 1, -- type determines the behavior of leveling up - using look up table vs formulas
+		style = 1, -- style determines the behavior of leveling up - using look up table vs formulas
 		loop = false, -- to loop back to level 1 or not once loop_level is reached
 		loop_level = 100,
 		loop_reset_xp_amounts = false,
 		loops_done = 0, -- loops done, can show stars next to level showing loops
 		max_level = 100,
-		use_max_level = false,
+		limit_by_max_level = false,
 		
 		formula = {
 			1 = "level * 200", -- you can define different formulas for different level ranges

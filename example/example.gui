@@ -1,11 +1,11 @@
 script: "/example/example.gui_script"
 fonts {
   name: "font"
-  font: "/example/font.font"
+  font: "/example/fonts/font.font"
 }
 fonts {
   name: "font_large_italic"
-  font: "/example/font_large_italic.font"
+  font: "/example/fonts/font_large_italic.font"
 }
 textures {
   name: "textures"

@@ -1,4 +1,4 @@
-font: "/example/font_large_italic.fnt"
+font: "/example/fonts/font_large_italic.fnt"
 material: "/builtins/fonts/font.material"
 size: 15
 antialias: 1

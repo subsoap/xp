@@ -1,4 +1,4 @@
-font: "/example/font.fnt"
+font: "/example/fonts/font.fnt"
 material: "/builtins/fonts/font.material"
 size: 15
 antialias: 1
