@@ -19,9 +19,9 @@ return {
 		limit_by_max_level = false,
 		
 		formula = {
-			1 = "level * 200", -- you can define different formulas for different level ranges
-			10 = "level * 250 + level * level * 100",
-			50 = "level * level * level",
+			[1] = "level * 200", -- you can define different formulas for different level ranges
+			[10] = "level * 250 + level * level * 100",
+			[50] = "level * level * level"
 		},
 		xp_amounts = { -- this is a lookup table so you can easily control level amounts
 			2000, -- 1
@@ -51,6 +51,6 @@ return {
 
 	},
 	arpg = {},
-	rpg = {},	
+	rpg = {}
 
 }
