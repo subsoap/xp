@@ -83,7 +83,7 @@ function update(self, dt)
 
 
 	self.current_xp_visible = xp.update_current_xp_text(self.current_xp_text_node, self.current_xp_visible, self.current_xp, self.max_xp, 0.25, dt)
-	gui.set_text(gui.get_node("level"), self.level)	
+	gui.set_text(gui.get_node("current_level_text"), self.level)	
 
 end
 

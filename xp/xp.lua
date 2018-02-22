@@ -11,16 +11,39 @@ function M.init()
 	if M.verbose == true then print("XP: Initialized") end
 end
 
+function M.check_xp(dt)
+end
+
+function M.update(dt)
+	M.check_xp(dt)
+end
+
 function M.get_data()
 end
 
 function M.load_data()
 end
 
-function M.create_id(id)
+function M.create_id(id, style)
+	assert(M.xp_data[id] == nil, "XP: You cannot have duplicate XP IDs")
+end
+
+function M.delete_id(id)
 end
 
 function M.add_xp(id, amount)
+end
+
+function M.set_total_xp(id, amount)
+end
+
+function M.set_level(id, level)
+end
+
+function M.level_up()
+end
+
+function M.update_xp()
 end
 
 -- Percent is 0-1
