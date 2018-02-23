@@ -66,6 +66,8 @@ function M.create_id(id, label, data)
 	assert(M.xp[id] == nil, "XP: You cannot have duplicate XP IDs")
 	assert(M.xp_data[label] ~= nil, "XP: create_id requires a valid label found in your xp data template")
 	local xp = {}
+
+	xp.id = id
 	
 	xp.level = M.xp_data[label].level or 1
 	xp.xp_needed = M.xp_data[label].xp_needed or 0
@@ -86,7 +88,6 @@ function M.create_id(id, label, data)
 	xp.formula = M.xp_data[label].formula or {}
 	xp.xp_amounts = M.xp_data[label].xp_amounts or {}
 
-	-- doesn't handle the nodes yet
 	if data ~= nil then
 		for k,v in pairs(data) do
 			xp[k] = v
@@ -95,9 +96,43 @@ function M.create_id(id, label, data)
 			end
 		end
 	end
+
+	if xp.node_clipper ~= nil then
+		xp.node_clipper_size = gui.get_size(xp.node_clipper)
+		xp.node_clipper_width = xp.node_clipper_size.x
+	end
+
+	xp.current_xp = 0
+	xp.current_visible_xp = 0
+	xp.easing_duration = 0.75
+
+	xp.progress_total = math.min(xp.current_xp / M.get_level_max_xp(xp) * 100, 100)
 	
 	M.xp[id] = xp
 	return M.xp[id]
+end
+
+function M.get_level_max_xp(xp)
+	if xp.style == 1 then -- look up table of pre made values
+		if #xp.xp_amounts >= xp.level then
+			return xp.xp_amounts[xp.level]
+		else
+			return xp.xp_amounts[#xp.xp_amounts]
+		end
+	elseif xp.style == 2 then -- xp formula function
+		local counter = 0
+		for k,v in ipairs(xp.formula) do
+			counter = counter + 1
+			if xp.level <= v.level then
+				local level = xp.level
+				return v.formula(level)
+			end
+			if counter == #xp.formula then
+				local level = xp.level
+				return v.formula(level)			
+			end
+		end
+	end
 end
 
 function M.delete_id(id)

@@ -22,10 +22,11 @@ return {
 		node_text_max_xp = nil, -- you can set default values to these if you want
 		node_clipper = nil,
 		
-		formula = {
-			[1] = "level * 200", -- you can define different formulas for different level ranges
-			[10] = "level * 250 + level * level * 100",
-			[50] = "level * level * level"
+		formula = { -- you can define different formulas for different level ranges
+			[1] = {level = 1, formula = function (level) return level * 250 end}, 
+			[2] = {level = 4, formula = function (level) return level * 251 end},
+			[3] = {level = 10, formula = function (level) return level * 252 end},
+			[4] = {level = 50, formula = function (level) return level * 1 end},
 		},
 		xp_amounts = { -- this is a lookup table so you can easily control level amounts
 			2000, -- 1
