@@ -56,12 +56,15 @@ function M.update_xp(dt)
 			end			
 		end
 		if M.xp[v.id].node_text_xp_current ~= nil then
-			M.xp[v.id].xp_current_visible = xp.update_xp_current_text(M.xp[v.id].node_text_xp_current, M.xp[v.id].xp_current_visible, M.xp[v.id].xp_current, M.xp[v.id].xp_max, 0.25, dt)
-			gui.set_text(M.xp[v.id].node_text_xp_current, M.xp[v.id].xp_current)
+			M.xp[v.id].xp_current_visible = math.min(M.xp[v.id].xp_max, xp.update_xp_current_text(M.xp[v.id].node_text_xp_current, M.xp[v.id].xp_current_visible, M.xp[v.id].xp_current, M.xp[v.id].xp_max, 0.25, dt))
+			gui.set_text(M.xp[v.id].node_text_xp_current, M.xp[v.id].xp_current_visible)
 		end
 		if M.xp[v.id].node_text_max_xp ~= nil then
 			gui.set_text(M.xp[v.id].node_text_max_xp, "/" .. M.get_level_max_xp(M.xp[v.id]))
-		end		
+		end
+		if M.xp[v.id].node_current_level_text ~= nil then
+			gui.set_text(M.xp[v.id].node_current_level_text, M.xp[v.id].level)
+		end			
 	end
 
 end
@@ -117,7 +120,8 @@ function M.create_id(id, label, data)
 	if data ~= nil then
 		for k,v in pairs(data) do
 			xp[k] = v
-			if k == "node_text_xp_current" or k == "node_text_max_xp" or k == "node_clipper" then
+			-- this should be from a table or something
+			if k == "node_text_xp_current" or k == "node_text_max_xp" or k == "node_clipper" or k == "node_current_level_text" then
 				xp[k] = setup_node(v)
 			end
 		end
@@ -134,7 +138,7 @@ function M.create_id(id, label, data)
 	xp.node_text_max_xp = xp.node_text_max_xp or setup_node(M.xp_data[label].node_text_max_xp)
 	xp.node_clipper = xp.node_clipper or setup_node(M.xp_data[label].node_clipper)
 	xp.node_current_level_text = xp.node_current_level_text or setup_node(M.xp_data[label].node_current_level_text)
-
+	
 	if xp.node_clipper ~= nil then
 		xp.node_clipper_size = gui.get_size(xp.node_clipper)
 		xp.node_clipper_width = xp.node_clipper_size.x		
@@ -189,9 +193,11 @@ function M.level_up(id, level_up_amount)
 	M.xp[id].easing_timer = 0
 	M.xp[id].xp_current = M.xp[id].xp_current - M.xp[id].xp_max
 	M.xp[id].easing_range_initial = 0
-	M.xp[id].easing_range_total = math.min(M.xp[id].xp_current / M.get_level_max_xp(M.xp[id]) * 100, 100)
+	M.xp[id].xp_max = M.get_level_max_xp(M.xp[id])
+	M.xp[id].easing_range_total = math.min(M.xp[id].xp_current / M.xp[id].xp_max * 100, 100)
 	M.xp[id].easing_range_total_new = M.xp[id].easing_range_total - M.xp[id].easing_range_initial
-	M.xp[id].xp_current_visible = 0	
+	M.xp[id].xp_current_visible = 0
+	
 
 	-- need check for needing to do another level up here?
 end
@@ -202,7 +208,7 @@ function M.add_xp_to_id(id, amount)
 		M.xp[id].xp_current = M.xp[id].xp_current + amount
 		M.xp[id].xp_accumulative = M.xp[id].xp_accumulative + amount
 		M.xp[id].easing_range_initial = M.xp[id].easing_range_total
-		M.xp[id].easing_range_total = math.min(M.xp[id].xp_current / M.get_level_max_xp(M.xp[id]) * 100, 100)
+		M.xp[id].easing_range_total = math.min(M.xp[id].xp_current / M.xp[id].xp_max * 100, 100)
 		M.xp[id].easing_range_total_new = M.xp[id].easing_range_total - M.xp[id].easing_range_initial
 	end
 end

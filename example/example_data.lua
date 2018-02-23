@@ -21,6 +21,7 @@ return {
 		node_text_xp_current = nil, -- these are the names of the nodes and not the result of gui.get_node(id)
 		node_text_xp_max = nil, -- you can set default values to these if you want
 		node_clipper = nil,
+		node_current_level_text = nil,
 		
 		formulas = { -- you can define different formulas for different level ranges
 			[1] = {level = 1, formula = function (level) return level * 250 end}, 
