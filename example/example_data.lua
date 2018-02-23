@@ -24,9 +24,11 @@ return {
 		node_current_level_text = nil,
 		
 		formulas = { -- you can define different formulas for different level ranges
-			[1] = {level = 1, formula = function (level) return level * 250 end}, 
-			[2] = {level = 4, formula = function (level) return level * 251 end},
-			[3] = {level = 10, formula = function (level) return level * 252 end}
+			[1] = {level = 10, formula = function (level) return level * 250 end}, -- these are only sample formulas not ones you should use
+			[2] = {level = 11, formula = function (level) return level * 251 end},
+			[2] = {level = 12, formula = function (level) return 10000 end}, -- you can return fixed numbers for levels too
+			[3] = {level = 13, formula = function (level) return math.floor(0.02 * level^3 + 3.06 * level^2 + 105.6 * level - 895) end} -- this formula is only meant for levels 12 and up this is "souls" style xp
+			-- above "souls" formula breaks at low levels fyi
 		},
 		xp_amounts = { -- this is a lookup table so you can easily control level amounts
 			2000, -- 1

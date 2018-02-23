@@ -73,9 +73,11 @@ function M.update(dt)
 end
 
 function M.get_data()
+	return M.xp
 end
 
-function M.load_data()
+function M.load_data(data)
+	M.xp = data
 end
 
 local function setup_node(node_name)
@@ -179,12 +181,6 @@ function M.delete_id(id)
 	assert(M.xp[id] ~= nil, "XP: delete_id - Cannot find ID " .. id)
 	if M.verbose == true then print("XP: Deleting ID " .. id) end
 	M.xp[id] = nil
-end
-
-function M.set_total_xp(id, amount)
-end
-
-function M.set_level(id, level)
 end
 
 function M.level_up(id, level_up_amount)

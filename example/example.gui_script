@@ -15,12 +15,12 @@ function init(self) -- done
 	self.time = 0	
 
 	-- setup XP
-	xp.xp_data_filename = "/example/example_data.lua"
+	xp.xp_data_filename = "/example/example_data.lua" -- study this file
 	xp.verbose = true
 	xp.init()
 
 	local data = {
-		style = 1, 
+		style = 1, -- test changing this to 2 to see how formulas work
 		level = 1, 
 		loop = true, 
 		node_clipper = "xp_clipper", 
