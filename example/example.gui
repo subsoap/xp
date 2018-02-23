@@ -612,7 +612,7 @@ nodes {
   blend_mode: BLEND_MODE_ALPHA
   text: "/20000"
   font: "small_counter"
-  id: "total_xp"
+  id: "xp_total"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_NW
@@ -675,7 +675,7 @@ nodes {
   blend_mode: BLEND_MODE_ALPHA
   text: "20000"
   font: "small_counter"
-  id: "current_xp"
+  id: "xp_current"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_NE
