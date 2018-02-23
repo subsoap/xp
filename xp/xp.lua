@@ -43,8 +43,24 @@ end
 
 function M.update_xp(dt)
 	for k,v in pairs(M.xp) do
-		v.time = v.time + dt
+		M.xp[v.id].time = M.xp[v.id].time + dt
+		M.xp[v.id].easing = ease.out_cubic(math.min(M.xp[v.id].time, M.xp[v.id].easing_duration), M.xp[v.id].easing_duration, 0, M.xp[v.id].easing_range_total_new) + M.xp[v.id].easing_range_initial
+		
+		if M.xp[v.id].easing > 100 then M.xp[v.id].easing = 100 end
+		if (M.xp[v.id].easing == M.xp[v.id].easing_range_total and M.xp[v.id].current_xp >= M.xp[v.id].xp_max) or M.xp[v.id].current_xp >= M.xp[v.id].xp_max and M.xp[v.id].easing >= 100 then
+			print("Level Up!")
+			M.level_up(v.id)
+		elseif (M.xp[v.id].easing ~= M.xp[v.id].easing_range_total) then
+			if M.xp[v.id].node_clipper ~= nil then
+				M.scale_gui_bar_clipper_size_x(M.xp[v.id].xp_clipper_node, M.xp[v.id].easing / 100, M.xp[v.id].xp_clipper_size)
+			end			
+		end
+		if M.xp[v.id].current_xp_text_node ~= nil then
+			M.xp[v.id].current_xp_visible = xp.update_current_xp_text(M.xp[v.id].current_xp_text_node, M.xp[v.id].current_xp_visible, M.xp[v.id].current_xp, M.xp[v.id].max_xp, 0.25, dt)
+			gui.set_text(M.xp[v.id].current_xp_text_node, M.xp[v.id].level)
+		end
 	end
+	
 end
 
 function M.update(dt)
@@ -75,9 +91,9 @@ function M.create_id(id, label, data)
 	xp.id = id
 	
 	xp.level = M.xp_data[label].level or 1
-	xp.xp_needed = M.xp_data[label].xp_needed or 0
+	xp.xp_needed = M.xp_data[label].xp_needed or 100
 	xp.xp_total = M.xp_data[label].total_xp or 0
-	xp.xp_max = 0
+	xp.xp_max = 100
 	xp.xp_accumulative = 0
 	xp.current_xp = 0
 	xp.current_visible_xp = 0
@@ -117,7 +133,7 @@ function M.create_id(id, label, data)
 	xp.node_text_current_xp = setup_node(M.xp_data[label].node_text_current_xp)
 	xp.node_text_max_xp = setup_node(M.xp_data[label].node_text_max_xp)
 	xp.node_clipper = setup_node(M.xp_data[label].node_clipper)
-
+	xp.node_current_level_text = setup_node(M.xp_data[label].node_current_level_text)
 
 	if xp.node_clipper ~= nil then
 		M.scale_gui_bar_clipper_size_x(xp.xp_clipper_node, xp.easing / 100, xp.xp_clipper_size)
@@ -165,10 +181,26 @@ end
 function M.set_level(id, level)
 end
 
-function M.level_up()
+function M.level_up(id, level_up_amount)
+	level_up_amount = level_up_amount or 1
+	M.xp[id].level = M.xp[id].level + level_up_amount
+	M.xp[id].time = 0
+	M.xp[id].current_xp = M.xp[id].current_xp - M.xp[id].xp_max
+	M.xp[id].easing_range_initial = 0
+	M.xp[id].easing_range_total = 0 math.min(M.xp[id].current_xp / M.get_level_max_xp(M.xp[id]) * 100, 100)
+	M.xp[id].easing_range_total_new = M.xp[id].easing_range_total - M.xp[id].easing_range_initial
+	M.xp[id].current_xp_visible = 0	
 end
 
-function M.update_xp()
+function M.add_xp_to_id(id, amount)
+	if M.xp[id].easing_range_initial ~= 100 then
+		M.xp[id].time = 0
+		M.xp[id].current_xp = M.xp[id].current_xp + amount
+		M.xp[id].xp_accumulative = M.xp[id].xp_accumulative + amount
+		M.xp[id].easing_range_initial = M.xp[id].easing_range_total
+		M.xp[id].easing_range_total = math.min(xp.current_xp / M.get_level_max_xp(xp) * 100, 100)
+		M.xp[id].easing_range_total_new = M.xp[id].easing_range_total - M.xp[id].easing_range_initial
+	end
 end
 
 -- Percent is 0-1
@@ -186,6 +218,7 @@ end
 -- this makes the text of the visible current xp go up smoothly
 -- you need fixed width bitmap fonts for counters if you don't want them to visibly jump around as they increase
 function M.update_current_xp_text(node, xp_visible, current_xp, max_xp, ratio, dt)
+	--print(node, xp_visible, current_xp, max_xp, ratio, dt)
 	xp_visible = M.get_current_xp_text(xp_visible, current_xp, max_xp, ratio, dt)
 	gui.set_text(node, xp_visible)
 	return xp_visible

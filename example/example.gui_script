@@ -6,7 +6,7 @@ local function clear_bad_rng()
 	math.random();math.random();math.random();math.random();math.random();	
 end
 
-function init(self)
+function init(self) -- done
 	clear_bad_rng()
 
 	-- example config
@@ -55,7 +55,7 @@ function final(self)
 
 end
 
-local function update_xp(self)
+local function update_xp(self) -- done
 	if self.easing_range_initial ~= 100 then
 		self.time = 0
 		self.current_xp = self.current_xp + math.max(math.random(4000), 1000)
@@ -68,7 +68,7 @@ local function update_xp(self)
 
 end
 
-local function level_up(self)
+local function level_up(self) -- done
 	-- add a wait here to do an animation or something
 
 	self.level = self.level + 1
@@ -95,7 +95,6 @@ function update(self, dt)
 		xp.scale_gui_bar_clipper_size_x(self.xp_clipper_node, self.easing / 100, self.xp_clipper_size)
 
 	end
-
 
 	self.current_xp_visible = xp.update_current_xp_text(self.current_xp_text_node, self.current_xp_visible, self.current_xp, self.max_xp, 0.25, dt)
 	gui.set_text(gui.get_node("current_level_text"), self.level)	
