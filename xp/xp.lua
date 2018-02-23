@@ -1,3 +1,5 @@
+ease = require("ease.ease")
+
 local M = {}
 
 M.xp = {}
@@ -39,11 +41,14 @@ function M.init()
 	if M.verbose == true then print("XP: Initialized") end
 end
 
-function M.check_xp(dt)
+function M.update_xp(dt)
+	for k,v in pairs(M.xp) do
+		v.time = v.time + dt
+	end
 end
 
 function M.update(dt)
-	M.check_xp(dt)
+	M.update_xp(dt)
 end
 
 function M.get_data()
@@ -71,7 +76,12 @@ function M.create_id(id, label, data)
 	
 	xp.level = M.xp_data[label].level or 1
 	xp.xp_needed = M.xp_data[label].xp_needed or 0
-	xp.total_xp = M.xp_data[label].total_xp or 0
+	xp.xp_total = M.xp_data[label].total_xp or 0
+	xp.xp_max = 0
+	xp.xp_accumulative = 0
+	xp.current_xp = 0
+	xp.current_visible_xp = 0
+	
 	xp.style = M.xp_data[label].style or 1
 	xp.loop = M.xp_data[label].loop or false
 	xp.loop_level = M.xp_data[label].loop_level or 100
@@ -79,14 +89,6 @@ function M.create_id(id, label, data)
 	xp.loops_done = M.xp_data[label].loops_done or 0
 	xp.max_level = M.xp_data[label].max_level or 100
 	xp.limit_by_max_level = M.xp_data[label].limit_by_max_level or false
-
-
-	xp.node_text_current_xp = setup_node(M.xp_data[label].node_text_current_xp)
-	xp.node_text_max_xp = setup_node(M.xp_data[label].node_text_max_xp)
-	xp.node_clipper = setup_node(M.xp_data[label].node_clipper)
-
-	xp.formula = M.xp_data[label].formula or {}
-	xp.xp_amounts = M.xp_data[label].xp_amounts or {}
 
 	if data ~= nil then
 		for k,v in pairs(data) do
@@ -99,14 +101,29 @@ function M.create_id(id, label, data)
 
 	if xp.node_clipper ~= nil then
 		xp.node_clipper_size = gui.get_size(xp.node_clipper)
-		xp.node_clipper_width = xp.node_clipper_size.x
+		xp.node_clipper_width = xp.node_clipper_size.x		
+	end
+	
+	xp.formulas = M.xp_data[label].formulas or {}
+	xp.xp_amounts = M.xp_data[label].xp_amounts or {}
+	
+	xp.time = 0
+	xp.easing_duration = 0.75
+	xp.easing_range_initial = 0
+	xp.easing_range_total = math.min(xp.current_xp / M.get_level_max_xp(xp) * 100, 100)
+	xp.easing_range_total_new = xp.easing_range_total - xp.easing_range_initial
+	xp.easing = ease.out_cubic(math.min(xp.time, xp.easing_duration), xp.easing_duration, 0, xp.easing_range_total_new ) + xp.easing_range_initial
+
+	xp.node_text_current_xp = setup_node(M.xp_data[label].node_text_current_xp)
+	xp.node_text_max_xp = setup_node(M.xp_data[label].node_text_max_xp)
+	xp.node_clipper = setup_node(M.xp_data[label].node_clipper)
+
+
+	if xp.node_clipper ~= nil then
+		M.scale_gui_bar_clipper_size_x(xp.xp_clipper_node, xp.easing / 100, xp.xp_clipper_size)
 	end
 
-	xp.current_xp = 0
-	xp.current_visible_xp = 0
-	xp.easing_duration = 0.75
 
-	xp.progress_total = math.min(xp.current_xp / M.get_level_max_xp(xp) * 100, 100)
 	
 	M.xp[id] = xp
 	return M.xp[id]
@@ -121,13 +138,13 @@ function M.get_level_max_xp(xp)
 		end
 	elseif xp.style == 2 then -- xp formula function
 		local counter = 0
-		for k,v in ipairs(xp.formula) do
+		for k,v in ipairs(xp.formulas) do
 			counter = counter + 1
 			if xp.level <= v.level then
 				local level = xp.level
 				return v.formula(level)
 			end
-			if counter == #xp.formula then
+			if counter == #xp.formulas then
 				local level = xp.level
 				return v.formula(level)			
 			end
@@ -139,6 +156,7 @@ function M.delete_id(id)
 end
 
 function M.add_xp(id, amount)
+	M.xp[id].time = 0
 end
 
 function M.set_total_xp(id, amount)

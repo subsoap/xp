@@ -22,7 +22,7 @@ return {
 		node_text_max_xp = nil, -- you can set default values to these if you want
 		node_clipper = nil,
 		
-		formula = { -- you can define different formulas for different level ranges
+		formulas = { -- you can define different formulas for different level ranges
 			[1] = {level = 1, formula = function (level) return level * 250 end}, 
 			[2] = {level = 4, formula = function (level) return level * 251 end},
 			[3] = {level = 10, formula = function (level) return level * 252 end},

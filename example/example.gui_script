@@ -22,29 +22,29 @@ function init(self)
 
 
 
-	
+
 
 	self.xp_clipper_node = gui.get_node("xp_clipper")
 	self.xp_clipper_size = gui.get_size(self.xp_clipper_node)
 
 	self.current_xp_text_node = gui.get_node("current_xp")
-	
+
 	self.xp_width = gui.get_size(self.xp_clipper_node).x
 
 	self.level = 1
-	
+
 	self.current_xp = 0
 	self.current_xp_visible = 0
 	self.max_xp = 20000
 	self.duration = 0.75 -- seconds to finish
-	self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
-	self.initial = 0 -- starting value	
-	self.total_new = self.total - self.initial -- progress amount to ease toward from initial value
+	self.easing_range_total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
+	self.easing_range_initial = 0 -- starting value	
+	self.easing_range_total_new = self.easing_range_total - self.easing_range_initial -- progress amount to ease toward from initial value
 
-	self.easing = ease.out_cubic(math.min(self.time, self.duration), self.duration, 0, self.total_new) + self.initial
+	self.easing = ease.out_cubic(math.min(self.time, self.duration), self.duration, 0, self.easing_range_total_new) + self.easing_range_initial
 	xp.scale_gui_bar_clipper_size_x(self.xp_clipper_node, self.easing / 100, self.xp_clipper_size)
 
-	
+
 	self.player_xp = xp.create_id("player_xp", "shooter", {style = 2, level = 55, loop = true, node_clipper = "xp_clipper", node_text_current_xp = "current_xp", node_text_max_xp = total_xp})
 	--pprint(self.player_xp)
 	--pprint(self.player_xp)
@@ -56,29 +56,29 @@ function final(self)
 end
 
 local function update_xp(self)
-	if self.initial ~= 100 then
+	if self.easing_range_initial ~= 100 then
 		self.time = 0
 		self.current_xp = self.current_xp + math.max(math.random(4000), 1000)
 		--print(self.current_xp, self.max_xp)
-		self.initial = self.total
-		self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
-		self.total_new = self.total - self.initial
+		self.easing_range_initial = self.easing_range_total
+		self.easing_range_total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
+		self.easing_range_total_new = self.easing_range_total - self.easing_range_initial
 	end
 
-	
+
 end
 
 local function level_up(self)
 	-- add a wait here to do an animation or something
-	
+
 	self.level = self.level + 1
-	
+
 	self.time = 0
 	self.current_xp = self.current_xp - self.max_xp
 	--print(self.current_xp, self.max_xp)
-	self.initial = 0
-	self.total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
-	self.total_new = self.total - self.initial
+	self.easing_range_initial = 0
+	self.easing_range_total = math.min(self.current_xp / self.max_xp * 100, 100) -- total progress amount
+	self.easing_range_total_new = self.easing_range_total - self.easing_range_initial
 	self.current_xp_visible = 0
 end
 
@@ -86,12 +86,12 @@ function update(self, dt)
 	xp.update(dt)
 
 	self.time = self.time + dt
-	self.easing = ease.out_cubic(math.min(self.time, self.duration), self.duration, 0, self.total_new) + self.initial
+	self.easing = ease.out_cubic(math.min(self.time, self.duration), self.duration, 0, self.easing_range_total_new) + self.easing_range_initial
 	if self.easing > 100 then self.easing = 100 end
-	if (self.easing == self.total and self.current_xp >= self.max_xp) or self.current_xp >= self.max_xp and self.easing >= 100 then
+	if (self.easing == self.easing_range_total and self.current_xp >= self.max_xp) or self.current_xp >= self.max_xp and self.easing >= 100 then
 		print("level up!")
 		level_up(self)
-	elseif (self.easing ~= self.total) then
+	elseif (self.easing ~= self.easing_range_total) then
 		xp.scale_gui_bar_clipper_size_x(self.xp_clipper_node, self.easing / 100, self.xp_clipper_size)
 
 	end
