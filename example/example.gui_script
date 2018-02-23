@@ -30,8 +30,6 @@ function init(self) -- done
 		
 	}
 	self.player_xp = xp.create_id("player_xp", "shooter", data)
-	--pprint(self.player_xp)
-	--pprint(self.player_xp)
 
 end
 
@@ -47,7 +45,10 @@ end
 
 function on_input(self, action_id, action)
 	if action_id == hash("key_z") and action.released or action_id == hash("click") and action.released then
-		xp.add_xp_to_id(self.player_xp.id, 50 + math.random(1000))
+		xp.add_xp_to_id(self.player_xp.id, 50 + math.random(10000))
+	end
+	if action_id == hash("key_x") and action.released then
+		xp.delete_id("player_xp")
 	end
 end
 

@@ -48,7 +48,6 @@ function M.update_xp(dt)
 
 		if M.xp[v.id].easing > 100 then M.xp[v.id].easing = 100 end
 		if (M.xp[v.id].easing == M.xp[v.id].easing_range_total and M.xp[v.id].xp_current >= M.xp[v.id].xp_max) or M.xp[v.id].xp_current >= M.xp[v.id].xp_max and M.xp[v.id].easing >= 100 then
-			print("Level Up!")
 			M.level_up(v.id)
 		elseif (M.xp[v.id].easing ~= M.xp[v.id].easing_range_total) then
 			if M.xp[v.id].node_clipper ~= nil then
@@ -177,6 +176,9 @@ function M.get_level_max_xp(xp)
 end
 
 function M.delete_id(id)
+	assert(M.xp[id] ~= nil, "XP: delete_id - Cannot find ID " .. id)
+	if M.verbose == true then print("XP: Deleting ID " .. id) end
+	M.xp[id] = nil
 end
 
 function M.set_total_xp(id, amount)
@@ -186,8 +188,7 @@ function M.set_level(id, level)
 end
 
 function M.level_up(id, level_up_amount)
-	--print(id, level_up_amount)
-	--pprint(M.xp[id])
+	if M.verbose == true then print("XP: Level Up! For ID " .. id) end
 	level_up_amount = level_up_amount or 1
 	M.xp[id].level = M.xp[id].level + level_up_amount
 	M.xp[id].easing_timer = 0
@@ -203,6 +204,7 @@ function M.level_up(id, level_up_amount)
 end
 
 function M.add_xp_to_id(id, amount)
+	assert(M.xp[id] ~= nil, "XP: add_xp_to_id - Cannot find ID " .. id)
 	if M.xp[id].easing_range_initial ~= 100 then
 		M.xp[id].easing_timer = 0
 		M.xp[id].xp_current = M.xp[id].xp_current + amount
